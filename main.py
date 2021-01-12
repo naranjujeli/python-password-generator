@@ -1,4 +1,6 @@
 from tkinter import *
+import string
+import random
 
 root = Tk()
 root.config(bg = "Light Gray")
@@ -34,6 +36,7 @@ varRadioLetras = IntVar()
 radio1 = Radiobutton(framePreferencias, text = "Solo mayúsculas", variable = varRadioLetras, value = 1, state = DISABLED)
 radio2 = Radiobutton(framePreferencias, text = "Solo minúsculas", variable = varRadioLetras, value = 2, state = DISABLED)
 radio3 = Radiobutton(framePreferencias, text = "Usar ambas", variable = varRadioLetras, value = 3, state = DISABLED)
+varRadioLetras.set(3)
 radio1.grid(row = 2, column = 0, sticky = W, columnspan = 2, padx = 10)
 radio2.grid(row = 3, column = 0, sticky = W, columnspan = 2, padx = 10)
 radio3.grid(row = 4, column = 0, sticky = W, columnspan = 2, padx = 10)
@@ -56,8 +59,29 @@ entry1 = Entry(frameOutput, textvariable = output, width = 33)
 entry1.grid(row = 0, column = 0, pady = 10, padx = 10)
 
 #La magia
+arrLetras = list(string.ascii_lowercase + string.ascii_uppercase)
+arrNumeros = list("0123456789")
+arrSimbolos = list(" !#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+
 def generarContraseña():
-    pass
+    if nCaracteres.get() == "" or int(nCaracteres.get()) < 1 or int(nCaracteres.get()) > 32 or (varCheck1.get() == 0 and varCheck2.get() == 0 and varCheck3.get() == 0):
+        output.set("ERROR")
+    else:
+        arrConsiderados, resultado = [], ""
+        if varCheck1.get():
+            if varRadioLetras.get() == 1:
+                arrConsiderados += arrLetras[26:]
+            elif varRadioLetras.get() == 2:
+                arrConsiderados += arrLetras[:26]
+            else:
+                arrConsiderados += arrLetras
+        if varCheck2.get():
+            arrConsiderados += arrNumeros
+        if varCheck3.get():
+            arrConsiderados += arrSimbolos
+        for i in range(int(nCaracteres.get())):
+            resultado += random.choice(arrConsiderados)
+        output.set(resultado)
 
 #Boton GENERAR
 boton1 = Button(frameOutput, text = "GENERAR", command = generarContraseña)
